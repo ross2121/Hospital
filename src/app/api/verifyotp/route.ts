@@ -1,13 +1,11 @@
 "use server"
 import { NextResponse } from 'next/server';
 import { verifyOTP } from '../../../components/atoms/cotrollers/route';
-import { NextApiResponse } from 'next';
-export const POST=async(req: Request, res: NextApiResponse)=>{
+export const POST=async(req: Request)=>{
   try {
-    return await verifyOTP(req, res);
+    return await verifyOTP(req);
   } catch (error) {
-    return NextResponse.json({ message: 'Message not allowed' }, { status: 405 });
+    return NextResponse.json({ message: 'Message not allowed',error }, { status: 405 });
   }
-  
-  
+
 }

@@ -34,13 +34,16 @@ export default function LoginForm() {
       if (response.status === 200) {
         console.log("Login successful", response.data);
       }
-    } catch (err: any) {
-      if (err.response) {
-        setError(err.response.data.message || "Login failed. Please try again.");
+   
+    } catch (err: unknown) {
+      // Check if the error has a `response` property (common in Axios errors)
+      if (err instanceof Error && 'response' in err) {
+        const axiosError = err as { response: { data: { message: string } } };
+        setError(axiosError.response.data.message || "Login failed. Please try again.");
       } else {
         setError("An unexpected error occurred. Please try again.");
       }
-    }
+    }    
   };
 
   return (

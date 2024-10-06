@@ -5,7 +5,6 @@ import otp from 'otp-generator';
 import nodemailer from 'nodemailer';
 import { NextApiRequest, NextApiResponse } from 'next';
 import dotenv from 'dotenv';
-import { any } from 'zod';
 import { NextResponse } from 'next/server';
 dotenv.config();
 const prisma = new PrismaClient();
@@ -19,46 +18,11 @@ export const transporter = nodemailer.createTransport({
   secure: false,
   host: 'smtp.gmail.com',
 });
-
-interface CustomRequest extends NextApiRequest {
-  app?: {
-    locals: {
-      OTP: string|null|undefined;
-    };
-  };
-}
-interface RegisterRequest extends NextApiRequest {
-  body: {
-    email: string;
-    password: string;
-    name: string;
-    hospital: string;
-  };
-}
-
-interface LoginRequest extends NextApiRequest {
-  body: {
-    email: string;
-    password: string;
-  };
-}
-
-interface OTPRequest extends CustomRequest {
-  body: {
-    email: string;
-    name: string;
-    reason?: string;
-    code?: string;
-    hospital?: string;
-  };
-}
-
-
 export const Register = async (req:Request, res: NextApiResponse) => {
   try {
  //
  const body=await req.json();
-    const { name,email, password } = body;
+    const { name,email} = body;
 
     if (!email ) {
       return NextResponse.json({ message: 'Please provide all required fields email' }, { status: 400 });
@@ -76,7 +40,7 @@ export const Register = async (req:Request, res: NextApiResponse) => {
     // const hashedPassword = bcrypt.hashSync(password, 10);
 
     // You can proceed to send OTP here
-    const num=Math.random()
+  
     await generaotp(req,res,email,name);
 
     return NextResponse.json({ message: 'OTP sent. Please verify to complete registration.' }, { status: 200 });
@@ -116,7 +80,7 @@ export const Login = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 
-export const generaotp = async (req:Request, res: NextApiResponse,email:any,name:any) => {
+export const generaotp = async (req:Request, res: NextApiResponse,email:string,name:string) => {
   // Generate OTP
  
   const OTP =otp.generate(6, {
@@ -129,7 +93,6 @@ export const generaotp = async (req:Request, res: NextApiResponse,email:any,name
 //   const { name, email, reason } = body;
   // Assuming you have access to adminId from the request or context
 // const { name, email, reason, adminId } = body; // Make sure to include adminId
-
 await prisma.otp.create({
   data: {
     otp: OTP,         // The OTP generated using otp-generator
@@ -170,29 +133,29 @@ await prisma.otp.create({
     </div>`
   };
 
-  const resetpasswordotp = {
-    from: process.env.EMAIL_USERNAME,
-    to: email,
-    subject: "Realtor Reset password verification",
-    html: `<div style="font-family: Poppins, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px; border: 1px solid #ccc; border-radius: 5px;">
-      <h1 style="font-size: 22px; font-weight: 500; color: #854CE6; text-align: center; margin-bottom: 30px;">Reset Your Realtor Account Password</h1>
-      <div style="background-color: #FFF; border: 1px solid #e5e5e5; border-radius: 5px; box-shadow: 0px 3px 6px rgba(0,0,0,0.05);">
-        <div style="background-color: #854CE6; border-top-left-radius: 5px; border-top-right-radius: 5px; padding: 20px 0;">
-          <h2 style="font-size: 28px; font-weight: 500; color: #FFF; text-align: center; margin-bottom: 10px;">Verification Code</h2>
-          <h1 style="font-size: 32px; font-weight: 500; color: #FFF; text-align: center; margin-bottom: 20px;">${OTP}</h1>
-        </div>
-        <div style="padding: 30px;">
-          <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Dear ${name},</p>
-          <p style="font-size: 14px; color: #666; margin-bottom: 20px;">To reset your Realtor account password, please enter the following verification code:</p>
-          <p style="font-size: 20px; font-weight: 500; color: #666; text-align: center; margin-bottom: 30px; color: #854CE6;">${OTP}</p>
-          <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Please enter this code in the Realtor app to reset your password.</p>
-          <p style="font-size: 12px; color: #666; margin-bottom: 20px;">If you did not request a password reset, please disregard this email.</p>
-        </div>
-      </div>
-      <br>
-      <p style="font-size: 16px; color: #666; margin-bottom: 20px; text-align: center;">Best regards,<br>The PODSTREAM Team</p>
-    </div>`
-  };
+  // const resetpasswordotp = {
+  //   from: process.env.EMAIL_USERNAME,
+  //   to: email,
+  //   subject: "Realtor Reset password verification",
+  //   html: `<div style="font-family: Poppins, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px; border: 1px solid #ccc; border-radius: 5px;">
+  //     <h1 style="font-size: 22px; font-weight: 500; color: #854CE6; text-align: center; margin-bottom: 30px;">Reset Your Realtor Account Password</h1>
+  //     <div style="background-color: #FFF; border: 1px solid #e5e5e5; border-radius: 5px; box-shadow: 0px 3px 6px rgba(0,0,0,0.05);">
+  //       <div style="background-color: #854CE6; border-top-left-radius: 5px; border-top-right-radius: 5px; padding: 20px 0;">
+  //         <h2 style="font-size: 28px; font-weight: 500; color: #FFF; text-align: center; margin-bottom: 10px;">Verification Code</h2>
+  //         <h1 style="font-size: 32px; font-weight: 500; color: #FFF; text-align: center; margin-bottom: 20px;">${OTP}</h1>
+  //       </div>
+  //       <div style="padding: 30px;">
+  //         <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Dear ${name},</p>
+  //         <p style="font-size: 14px; color: #666; margin-bottom: 20px;">To reset your Realtor account password, please enter the following verification code:</p>
+  //         <p style="font-size: 20px; font-weight: 500; color: #666; text-align: center; margin-bottom: 30px; color: #854CE6;">${OTP}</p>
+  //         <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Please enter this code in the Realtor app to reset your password.</p>
+  //         <p style="font-size: 12px; color: #666; margin-bottom: 20px;">If you did not request a password reset, please disregard this email.</p>
+  //       </div>
+  //     </div>
+  //     <br>
+  //     <p style="font-size: 16px; color: #666; margin-bottom: 20px; text-align: center;">Best regards,<br>The PODSTREAM Team</p>
+  //   </div>`
+  // };
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -226,7 +189,7 @@ await prisma.otp.create({
   }
 
 // Verify OTP
-export const verifyOTP = async (req: Request, res: NextApiResponse) => {
+export const verifyOTP = async (req: Request) => {
   try {
     // Parse the body from the request
     const body=await req.json()

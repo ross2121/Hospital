@@ -6,7 +6,7 @@ export const POST=async(req: Request, res: NextApiResponse)=>{
   try {
     return await Register(req, res);
   } catch (error) {
-    return NextResponse.json({ message: 'Message not allowed' }, { status: 405 });
+    return NextResponse.json({ message: 'Message not allowed',error }, { status: 405 });
   }
   
   

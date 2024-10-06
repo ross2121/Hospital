@@ -49,14 +49,24 @@ export default function SignupFormDemo() {
         router.push("/otp");
         localStorage.setItem("tempUserData", JSON.stringify(signupdata));
       }
-    } catch (error: any) {
-      // Check for email already exists error
-      if (error.response && error.response.data && error.response.data.message) {
-        setError(error.response.data.message); // Backend email error
+    } 
+    catch (error: unknown) {
+      // Check if the error is an Axios error (with a response)
+      if (error instanceof Error && 'response' in error) {
+        const axiosError = error as { response: { data: { message: string } } };
+    
+        // Check for email already exists error
+        if (axiosError.response && axiosError.response.data && axiosError.response.data.message) {
+          setError(axiosError.response.data.message); // Backend email error
+        } else {
+          setError("Signup failed. Please try again later.");
+        }
       } else {
+        // If it's not an Axios error or doesn't have a response, handle the fallback
         setError("Signup failed. Please try again later.");
       }
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   };

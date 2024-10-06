@@ -6,13 +6,13 @@ import { Button } from "../ui/button";
 // import { useRecoilState } from "recoil";
 // import { authState } from "../atoms/atutomath";
 import { Input } from "../ui/input";
-import { jwtDecode } from "jwt-decode"; // Correct import
+ // Correct import
 
 const OTPPage = () => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [user, setuser] = useState({ value: null });
+  // const [user, setuser] = useState({ value: null });
 //   const [auth, setAuth] = useRecoilState(authState);
   const router = useRouter();
 
@@ -48,7 +48,7 @@ const OTPPage = () => {
 
       if (response.status === 200) {
         const { token, user } = response.data;
-        const decodedToken = jwtDecode<{ role: string }>(token);
+        // const decodedToken = jwtDecode<{ role: string }>(token);
         // const user=response.data.user;
         // setAuth({
         //   isAuthenticated: true,
