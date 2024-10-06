@@ -1,5 +1,5 @@
 import React from "react";
-import SignUp from "../../../components/SignUp";
+import SignUp from "@/components/example/signup-form-demo";
 const page = () => {
   return (
     <div>

@@ -1,5 +1,5 @@
 import OTPPage from "@/components/example/otp"
-import { BackgroundLines } from "@/components/ui/background-lines";
+// import { BackgroundLines } from "@/components/ui/background-lines";
 import React from "react";
 
 const page = () => {

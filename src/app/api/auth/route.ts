@@ -1,7 +1,7 @@
 "use server"
 import { NextResponse } from 'next/server';
 import { Register } from '../../../components/atoms/cotrollers/route';
-import { NextApiRequest,NextApiResponse } from 'next';
+import { NextApiResponse } from 'next';
 export const POST=async(req: Request, res: NextApiResponse)=>{
   try {
     return await Register(req, res);
